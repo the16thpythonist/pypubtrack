@@ -27,6 +27,28 @@ A python client for the pubtrack REST api
 * Documentation: https://pypubtrack.readthedocs.io.
 
 
+Usage
+-----
+
+.. code-block:: python
+
+    from pypubtrack import Pubtrack
+    from pypubtrack.config import DEFAULT
+
+    config = DEFAULT.copy()
+    config['token'] = 'MY SUPER SECRET TOKEN'
+    config['url'] = 'https://pubtrack.com/api/v1'
+
+    pubtrack = Pubtrack(config)
+
+    try:
+        publications = pubtrack.publication.get()['results']
+        for publication in publications:
+            print(publication)
+    except ConnectionError:
+        print('Something went wrong!')
+
+
 Features
 --------
 
