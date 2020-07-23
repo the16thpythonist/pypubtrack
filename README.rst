@@ -2,7 +2,8 @@
 pypubtrack
 ==========
 
-.. image:: ./main.png
+.. image:: main.png
+        :width: 400px
 
 
 .. image:: https://img.shields.io/pypi/v/pypubtrack.svg
