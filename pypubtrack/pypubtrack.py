@@ -49,7 +49,7 @@ class Pubtrack:
             response = self.publication.post(base_publication)
             publication['uuid'] = response['uuid']
         except ConnectionError as err:
-            raise err
+            print(err)
 
         self._import_publication_authors(publication)
 
@@ -61,10 +61,11 @@ class Pubtrack:
         authors = self._import_authors(authors)
         for author in authors:
             # Attempt to post the authorings
-            self.authoring.post({
+            data = {
                 'author': author['slug'],
                 'publication': publication['uuid']
-            })
+            }
+            self.authoring.post(data)
 
     def _import_authors(self, authors: Iterable[Dict[str, Any]]):
         result = []
@@ -72,5 +73,6 @@ class Pubtrack:
             # The actual author
             response = self.author.post_or_get(author, scopus_id=author['scopus_id'])
             result.append(response)
+
         return result
 

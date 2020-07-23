@@ -2,6 +2,8 @@
 pypubtrack
 ==========
 
+.. image:: ./main.png
+
 
 .. image:: https://img.shields.io/pypi/v/pypubtrack.svg
         :target: https://pypi.python.org/pypi/pypubtrack

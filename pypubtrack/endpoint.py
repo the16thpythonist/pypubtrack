@@ -69,9 +69,8 @@ class Endpoint:
         response = func(**kwargs)
 
         if response.status_code in [400]:
-            print(response.json())
             raise ConnectionError('Request "{}" with status code: {} (kwargs: {})'.format(
-                type,
+                method,
                 response.status_code,
                 str(kwargs))
             )
@@ -79,7 +78,7 @@ class Endpoint:
             return response.json()
 
     def _get_url(self, *args):
-        url = os.path.join(self.url, *args)
+        url = os.path.join(self.url, *args) if args else self.url
         if url[-1] != '/':
             url += '/'
         return url
