@@ -55,17 +55,17 @@ Installation
 
 `pypubtrack` is a pure python library and can be simply installed using pip:
 
-.. code-block:: console
+.. code-block:: bash
 
-    pip3 install pypubtrack
+    $ pip3 install pypubtrack
 
 Alternatively it can also be installed by cloning this repository from github and executing the setup manually:
 
-.. code-block:: console
+.. code-block:: bash
 
-    git clone https://github.com/the16thpythonist/pypubtrack.git
-    cd pypubtrack
-    python3 setup.py install
+    $ git clone https://github.com/the16thpythonist/pypubtrack.git
+    $ cd pypubtrack
+    $ python3 setup.py install
 
 Basic Usage
 -----------
