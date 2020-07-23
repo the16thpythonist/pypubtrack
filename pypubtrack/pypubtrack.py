@@ -31,7 +31,7 @@ class MetaAuthorsEndpoint(Endpoint):
 
 @AddEndpoint('publication', PublicationsEndpoint)
 @AddEndpoint('author', AuthorsEndpoint)
-@AddEndpoint('authorings', AuthoringsEndpoint)
+@AddEndpoint('authoring', AuthoringsEndpoint)
 @AddEndpoint('meta_author', MetaAuthorsEndpoint)
 class Pubtrack:
 

@@ -22,7 +22,7 @@ class Endpoint:
             return self.get_by(**get)
 
     def get_by(self, **params):
-        results = self.get('', params)['results']
+        results = self.get('', params=params)['results']
         if len(results) == 0:
             raise FileNotFoundError('{} not found {}'.format(str(self), str(params)))
         return results[0]
