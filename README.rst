@@ -2,7 +2,7 @@
 pypubtrack
 ==========
 
-.. image:: https://github.com/the16thpythonist/pypubtrack/main.png
+.. image:: https://github.com/the16thpythonist/pypubtrack/blob/master/main.png
         :width: 100%
 
 .. image:: https://img.shields.io/pypi/v/pypubtrack.svg
