@@ -26,3 +26,21 @@ Changed:
 - The config is now managed as a singleton object instead of just a global variable dictionary.
   THIS WILL BREAK EXISTING CODE.
 - Renamed "Authentication" to "AbstractAuthentication" and made it inherit from ABC
+
+
+0.2.1
+-----
+
+Added:
+
+- Implemented Endpoint chaining: The AddEndpoint decorator can now be used to chain endpoints together, which enable
+  code reuse.
+- Added unittests for the endpoint chaining functionality
+
+
+TODO
+----
+
+- Update the README
+- Write Documentation
+- Write command "update-scopus"

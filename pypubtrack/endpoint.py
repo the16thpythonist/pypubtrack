@@ -1,5 +1,6 @@
 import os
 import sys
+import copy
 import inspect
 from typing import Dict, Any, Type, Union
 
@@ -229,23 +230,15 @@ class Endpoint:
     # MAGIC METHODS
     # -------------
 
-    def __call__(self, pk=''):
+    def __call__(self, *pk):
         """
-        An Endpoint object can also be called directly without any method. This is a convenience feature. This call
-        will return the same as calling the "get" method without primary keys.
-
-        **Example**
-
-        .. code-block:: python
-
-            # Both calls do the same thing
-            books_endpoint.get()
-            books_endpoint()
 
         :param pk:
         :return:
         """
-        self.get(pk)
+        this = copy.deepcopy(self)
+        this.url = self._get_url(*pk)
+        return this
 
     def __str__(self):
         """
@@ -280,6 +273,9 @@ class AddEndpoint:
 
     .. code-block:: python
 
+        from pypubtrack.endpoint import Endpoint, AddEndpoint
+        from pypubtrack.config import Config
+
         class BooksEndpoint(Endpoint):
 
             def __init__(self, url, config):
@@ -292,6 +288,7 @@ class AddEndpoint:
         class Base:
 
             def __init__(self):
+                self.config = Config()
                 self.url = 'http://myurl.com/api'
 
 
@@ -302,12 +299,46 @@ class AddEndpoint:
     So, the decorator requires to arguments: A string name and a Enpoint class. It will then dynamically add an endpoint
     property with the given name to the decorated class, which is an instance of the given endpoint class. The only
     requirement which has to be fulfilled by the base class which is decorated is that it does not already have a
-    method/attribute with the given name and *that it has a "self.url" attribute* which will be used as the basis for
-    the endpoint!
+    method/attribute with the given name and *that it has a "self.url" and "self.config" attribute* which will be used
+    as the basis for the endpoint!
 
     *Endpoint chaining*
 
-    tbd
+    This functionality also allows the chaining of endpoint classes! Let's again consider an example with the books
+    endpoint. Now each book has a series of authors, but our base site also has a number of authors. So there are two
+    endpoints, which we want to add: "http://myurl.com/api/books/:title/authors" and "http://myurl.com/api/authors".
+
+    .. code-block:: python
+        from pypubtrack.endpoint import Endpoint, AddEndpoint
+        from pypubtrack.config import Config
+
+        class AuthorsEndpoint(Endpoint):
+
+            def get_endpoint(self):
+                return 'authors'
+
+        @AddEndpoint('authors', AuthorsEndpoint)
+        class BooksEndpoint(Endpoint):
+
+            def get_endpoint(self):
+                return 'books'
+
+        @AddEndpoint('books', BooksEndpoint)
+        @AddEndpoint('authors', AuthorsEndpoint)
+        class Base:
+
+            def __init__(self):
+                self.config = Config()
+                self.url = 'http://myurl.com/api'
+
+
+        base = Base()
+        print(base.authors) # "ENDPOINT http://myurl.com/api/authors"
+        print(base.books('title').authors) # "ENDPOINT http://myurl.com/api/books/title/authors"
+
+    Since the "__call__" method for a Endpoint returns a modified Endpoint object instance, whose "self.url" property
+    includes the given primary keys, this can be used to chain endpoints together. This enables the reuse of big chunks
+    of code.
 
     """
     def __init__(self, name: str, endpoint: Union[Endpoint, str]):

@@ -3,19 +3,23 @@ from typing import Any, Dict, Iterable
 
 from pypubtrack.config import Config
 from pypubtrack.endpoint import Endpoint, AddEndpoint
-from pypubtrack.util import exclude_keys
+from pypubtrack.util import exclude_keys, get_config_path
 
 
-class PublicationsEndpoint(Endpoint):
-
-    def get_endpoint(self):
-        return 'publications'
-
+# BASIC ENDPOINTS
+# ===============
 
 class AuthorsEndpoint(Endpoint):
 
     def get_endpoint(self):
         return 'authors'
+
+
+@AddEndpoint('author', AuthorsEndpoint)
+class PublicationsEndpoint(Endpoint):
+
+    def get_endpoint(self):
+        return 'publications'
 
 
 class AuthoringsEndpoint(Endpoint):
@@ -76,4 +80,3 @@ class Pubtrack:
             result.append(response)
 
         return result
-

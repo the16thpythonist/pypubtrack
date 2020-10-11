@@ -1,7 +1,10 @@
 import os
 import toml
+from pathlib import Path
 
 import pypubtrack.authentication as authentication
+
+PATH = Path(__file__).parent.absolute()
 
 # CONFIG CLASS
 # ============
@@ -44,7 +47,9 @@ class Config(metaclass=Singleton):
     """
 
     def __init__(self):
+        config_template_path = os.path.join(PATH, 'templates', 'config.toml')
         self.data = {}
+        self.load_file(config_template_path)
 
     # IMPLEMENTING DICT FUNCTIONALITY
     # -------------------------------
@@ -85,8 +90,10 @@ class Config(metaclass=Singleton):
 
     def load_dict(self, data: dict):
         self.data = data
+        return self
 
     def load_file(self, file_path: str):
         data = toml.load(file_path)
-        self.load_dict(data)
+        return self.load_dict(data)
+
 
