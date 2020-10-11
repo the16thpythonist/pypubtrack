@@ -1,0 +1,7 @@
+[basic]
+    url = 'http://0.0.0.0:8000/api/v1'
+
+[auth]
+    type = 'TokenAuthentication'
+    token = '46a79e91844078302272ceace5339ea40905adc1'
+

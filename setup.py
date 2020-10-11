@@ -10,7 +10,13 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+with open('VERSION') as version_file:
+    version = version_file.read()
+
+
+requirements = [
+    'Click>=7.0',
+]
 
 setup_requirements = ['pytest-runner', ]
 
@@ -34,7 +40,7 @@ setup(
     description="A python client for the pubtrack REST api",
     entry_points={
         'console_scripts': [
-            'pypubtrack=pypubtrack.cli:main',
+            'pypubtrack=pypubtrack.cli:cli',
         ],
     },
     install_requires=requirements,
@@ -48,6 +54,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/the16thpythonist/pypubtrack',
-    version='0.1.0',
+    version=version,
     zip_safe=False,
 )

@@ -1,6 +1,7 @@
 """Main module."""
 from typing import Any, Dict, Iterable
 
+from pypubtrack.config import Config
 from pypubtrack.endpoint import Endpoint, AddEndpoint
 from pypubtrack.util import exclude_keys
 
@@ -35,9 +36,9 @@ class MetaAuthorsEndpoint(Endpoint):
 @AddEndpoint('meta_author', MetaAuthorsEndpoint)
 class Pubtrack:
 
-    def __init__(self, config: dict):
+    def __init__(self, config: Config):
         self.config = config
-        self.url = self.config['url']
+        self.url = self.config.get_url()
 
     # PUBLIC METHODS
     # --------------
