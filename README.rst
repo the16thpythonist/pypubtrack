@@ -2,7 +2,7 @@
 pypubtrack
 ==========
 
-.. image:: https://github.com/the16thpythonist/pypubtrack/blob/master/main.png
+.. image:: https://raw.githubusercontent.com/the16thpythonist/pypubtrack/master/main.png
         :width: 100%
 
 .. image:: https://img.shields.io/pypi/v/pypubtrack.svg
@@ -24,7 +24,7 @@ A python client for the pubtrack REST api
 Table of Contents
 =================
 
-.. contents:: :local: Table of Contents
+.. contents:: Table of Contents
     :depth: 3
 
 Overview
