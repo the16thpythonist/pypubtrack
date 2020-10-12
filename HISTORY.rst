@@ -36,7 +36,11 @@ Added:
 - Implemented Endpoint chaining: The AddEndpoint decorator can now be used to chain endpoints together, which enable
   code reuse.
 - Added unittests for the endpoint chaining functionality
+- Docstrings "endpoint.py"
 
+Fixed:
+
+- Fixed a potential windows bug in endpoint.py
 
 TODO
 ----

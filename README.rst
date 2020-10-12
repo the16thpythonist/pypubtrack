@@ -24,7 +24,8 @@ A python client for the pubtrack REST api
 Table of Contents
 =================
 
-tbd
+.. contents:: :local: Table of Contents
+    :depth: 3
 
 Overview
 ========
@@ -43,7 +44,8 @@ As it exposes a REST API, there are vast options for this client interface to in
 Obtaining an API Token
 ----------------------
 
-tbd
+Visit the admin backend of the pubtrack site you are attempting to connect with. Navigate to the section "Tokens"
+and create a new one. Use this token in your code to generate properly authenticated requests.
 
 First Steps
 ===========
@@ -55,7 +57,7 @@ Installation
 
 .. code-block:: console
 
-    $ pip3 install pypubtrack
+    $ pip3 install --user pypubtrack
 
 Alternatively it can also be installed by cloning this repository from github and executing the setup manually:
 
@@ -71,12 +73,15 @@ Basic Usage
 .. code-block:: python
 
     from pypubtrack import Pubtrack
-    from pypubtrack.config import DEFAULT
+    from pypubtrack.config import Config
 
-    config = DEFAULT.copy()
-    config['token'] = 'MY SUPER SECRET TOKEN'
-    config['url'] = 'https://pubtrack.com/api/v1'
+    # Getting a new instance of the config singleton
+    config = Config().load_dict({
+        'base': {'url': 'https://pubtrack.com/api/v1'},
+        'auth': {'token': 'MY SUPER SECRET TOKEN'}
+    })
 
+    # Creating the main access object
     pubtrack = Pubtrack(config)
 
     try:
@@ -86,11 +91,6 @@ Basic Usage
     except ConnectionError:
         print('Something went wrong!')
 
-
-Features
---------
-
-* TODO
 
 Credits
 -------

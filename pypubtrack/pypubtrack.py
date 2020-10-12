@@ -39,7 +39,36 @@ class MetaAuthorsEndpoint(Endpoint):
 @AddEndpoint('authoring', AuthoringsEndpoint)
 @AddEndpoint('meta_author', MetaAuthorsEndpoint)
 class Pubtrack:
+    """
+    This is the main object, which represents the connection to a pubtrack web application!
 
+    **Example**
+
+    The following example illustrates how to initialize a new pubtrack object instance and how to use it to access a
+    simple list of all publications.
+
+    .. code-block:: python
+
+        from pypubtrack.config import Config
+        from pypubtrack.pypubtrack import Pubtrack
+
+        # Get a new instance of the config singleton object.
+        config = Config().load_dict({
+            'base': {
+                'url': 'http://localhost/api/v1/'
+            },
+            'auth': {
+                'token': 'my-token'
+            }
+        })
+
+        pubtrack = Pubtrack(config)
+
+        publications = pubtrack.publication.get()['results']
+        for publication in publications:
+            print(publication)
+
+    """
     def __init__(self, config: Config):
         self.config = config
         self.url = self.config.get_url()

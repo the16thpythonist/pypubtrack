@@ -2,6 +2,7 @@ import os
 import sys
 import copy
 import inspect
+import urllib.parse
 from typing import Dict, Any, Type, Union
 
 import requests
@@ -202,8 +203,20 @@ class Endpoint:
     # -----------------
 
     def _request(self, method: str, kwargs: dict):
+        """
+        Executes the http method which is identified by its string name *method* with the keyword arguments in *kwargs*
+
+        :param method:
+        :param kwargs:
+        :return:
+        """
+        # "_authentication" method adds the necessary authentication details to the kwrags dict. Otherwise it leaves
+        # the dict the same
         kwargs = self._authentication(kwargs)
 
+        # The "requests" module is a python library which implements the HTTP methods.
+        # Here we dynamically invoke different methods from this module based on the string name of the http method
+        # i.e. get, put, patch...
         func = getattr(requests, method)
         response = func(**kwargs)
 
@@ -214,15 +227,62 @@ class Endpoint:
                 str(kwargs))
             )
         else:
+            # The result of the API request will be a json description of the database records, which were requested
+            # "json" here is a convenience function, which returns a dict object, that was automatically json
+            # parsed from the string content of the reply.
             return response.json()
 
     def _get_url(self, *args):
-        url = os.path.join(self.url, *args) if args else self.url
+        """
+        Returns the absolute url to a given endpoint, which is identified by the given *args*.
+
+        The given *args* in this case can be a list of primary keys. So the result will be the merge of the base url
+        which is saved as the "url" attribute of the object and the primary keys. This will then ultimately address
+        one specific element within the web app's database.
+
+        **Example**
+
+        The following example illustrates how this method works.
+
+        .. code-block:: python
+
+            print(str(books_endpoint))
+            # ENDPOINT http://myurl.com/books
+
+            print(books_endpoint._get_url('ultralearning'))
+            # http://myurl.com/books/ultralearining/
+
+        :param args:
+        :return:
+        """
+        # Changed 12.10.2020
+        # Previously I was using "os.path.join" in this case and it was working fine, but I realized that this would
+        # only be the case for linux os.
+        # relative_url pre-assembles the back part of the url and "urljoin" then creates the overall correct url.
+        relative_url = '/'.join(*args)
+        url = urllib.parse.urljoin(self.url, relative_url) if args else self.url
+
+        # With this we make sure that the url actually ends with a slash. In case it does not, one is added.
+        # It turns out, that this is actually important!
         if url[-1] != '/':
             url += '/'
+
         return url
 
     def _authentication(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Takes the keyword arguments to a request call and adds the necessary authentication information to it. Returns
+        the kwargs dict with the added authentication.
+
+        The type of authentication depends on the subclass of AbstractAuthentication, which was defined in the "config"
+        passed to this object.
+
+        :param kwargs:
+        :return:
+        """
+        # "get_authentication_class" returns the class object of a subclass of AbstractAuthentication. These
+        # subclasses fully implement all necessary steps for the authentication. The also implement a __call__ method
+        # which adds this to the kwargs dict.
         authentication_class = self.config.get_authentication_class()
         authenticate = authentication_class(self.config)
         return authenticate(kwargs)
@@ -232,6 +292,31 @@ class Endpoint:
 
     def __call__(self, *pk):
         """
+        Returns a copy of this object, where the base URL includes the given primary keys *pk*
+
+        **Details**
+
+        This method creates a deep copy of the very object, which it is called from. Then it changes the base API URL
+        of the "url" attribute to include the primary keys which were passed as arguments to this method. This
+        new instance object is then returned. The purpose of this functionality is primarily for the possibility
+        of "endpoint chaining". For a detailed explanation see the class `AddEndpoint`
+
+        **Example**
+
+        The following example shows how a new instance is created with this method:
+
+        .. code-block:: python
+
+            specific_books_endpoint = books_endpoint('ultralearining')
+            print(isinstance(specific_books_endpoint, Endpoint)) # True
+            print(isinstance(books_endpoint, Endpoint)) # True
+            print(specific_books_endpoint is books_endpoint) # False
+
+            print(str(books_endpoint)
+            # ENDPOINT http://myurl.com/api/books
+
+            print(str(specific_books_endpoint)
+            # ENDPOINT http://myurl.com/api/books/ultralearning
 
         :param pk:
         :return:
@@ -346,21 +431,44 @@ class AddEndpoint:
         self.endpoint = endpoint
 
     def __call__(self, cls: Type):
+        """
+        This is the method which actually performs the decoration. It accepts the class to be decorated as an argument.
+        That class is modified in this function and then returned again.
 
+        :param cls:
+        :return:
+        """
+        # Here we dynamically construct an anonymous function object, which is actually meant to act as a method later
+        # on. The "this" argument is meant to represent the "self" argument which is usually passed to methods.
         def anonymous(this):
+            # If the "endpoint" definition was given as a string, this indicates that the class object of that endpoint
+            # is to be lazy loaded. If the class object exists however a new endpoint instance is returned
             if isinstance(self.endpoint, str):
+                # "_lazy_class' lazy loads the class object which is identified by the given string name from the
+                # module IN WHICH THE DECORATION IS PERFORMED. This is important! it has to be in the same module
                 endpoint_class = self._lazy_class(self.endpoint, this.__module__)
                 return endpoint_class(this.url, this.config)
             else:
                 return self.endpoint(this.url, this.config)
 
         anonymous.__name__ = self.name
+        # Here we dynamically add the function which we have just defined above as a new method of the class which is
+        # being decorated. In fact, the function is added as a property! This means it can be accessed as if it was a
+        # attribute. It is important that is actually a function though because every call to this attribute
+        # is actually meant to return a new endpoint instance!
         setattr(cls, self.name, property(anonymous))
 
         return cls
 
     @classmethod
     def _lazy_class(cls, class_name: str, module: str):
+        """
+        Lazy loads the class object for a given *class_name* from a module with the given *module_name*
+
+        :param class_name:
+        :param module:
+        :return:
+        """
         members = inspect.getmembers(sys.modules[module])
         members_dict = dict(members)
         return members_dict[class_name]
