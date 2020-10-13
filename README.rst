@@ -63,6 +63,7 @@ To use the CLI commands properly it is recommended to add the folder of local bi
 system PATH:
 
 .. code-block:: console
+
     $ echo 'export PATH=~/.local/bin/:$PATH' >> ~/.bashrc
     $ source ~/.bashrc
 
@@ -125,10 +126,10 @@ records on pubtrack with kitopen information, use the `update-kitopen` command.
     $ pypubtrack import-scopus --verbose --start=2018
     $ pypubtrack update-kitopen --verbose --start=2018
 
-.. note::
+**(!) NOTE**
 
-    To use the pypubtrack application, the config file needs to be initialized and needs to contain valid information
-    about the pubtrack URL, authentication token, scopus api key etc...
+To use the pypubtrack application, the config file needs to be initialized and needs to contain valid information
+about the pubtrack URL, authentication token, scopus api key etc...
 
 Credits
 =======
