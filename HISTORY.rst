@@ -28,8 +28,8 @@ Changed:
 - Renamed "Authentication" to "AbstractAuthentication" and made it inherit from ABC
 
 
-0.2.1
------
+0.3.0 (2020-10-13)
+------------------
 
 Added:
 
@@ -37,14 +37,19 @@ Added:
   code reuse.
 - Added unittests for the endpoint chaining functionality
 - Docstrings "endpoint.py"
+- The "config" CLI command. This command will edit the config file of the project
+- The "import-scopus" CLI command, which will import scopus publication records based on the authors, which are defined
+  on the pubtrack app
+- The "list-publications" CLI command, which will list the publications on the system.
+- Docstrings config file.
 
 Fixed:
 
 - Fixed a potential windows bug in endpoint.py
+- Finally added necessary package requirements
 
 TODO
 ----
 
 - Update the README
 - Write Documentation
-- Write command "update-scopus"

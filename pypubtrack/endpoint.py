@@ -219,8 +219,8 @@ class Endpoint:
         # i.e. get, put, patch...
         func = getattr(requests, method)
         response = func(**kwargs)
-
-        if response.status_code in [400]:
+        #print(kwargs, response.content)
+        if response.status_code in [400, 403]:
             raise ConnectionError('Request "{}" with status code: {} (kwargs: {})'.format(
                 method,
                 response.status_code,
@@ -259,8 +259,8 @@ class Endpoint:
         # Previously I was using "os.path.join" in this case and it was working fine, but I realized that this would
         # only be the case for linux os.
         # relative_url pre-assembles the back part of the url and "urljoin" then creates the overall correct url.
-        relative_url = '/'.join(*args)
-        url = urllib.parse.urljoin(self.url, relative_url) if args else self.url
+        relative_url = '/'.join(args) if args else ''
+        url = '/'.join([self.url, relative_url])
 
         # With this we make sure that the url actually ends with a slash. In case it does not, one is added.
         # It turns out, that this is actually important!

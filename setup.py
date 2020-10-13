@@ -16,6 +16,9 @@ with open('VERSION') as version_file:
 
 requirements = [
     'Click>=7.0',
+    'jinja2>=2.11.2',
+    'pybliometrics>=2.6.2',
+    'pykitopen>=0.1.0'
 ]
 
 setup_requirements = ['pytest-runner', ]

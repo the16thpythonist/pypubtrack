@@ -1,0 +1,12 @@
+{{ publication['title']|upper }} [UUID:{{ publication['uuid'] }}]
+by {{ publication['authors'][0]['last_name'] }} et al.
+  | General Information
+    > DOI:                  {{ publication['doi'] }}
+    > Publication Date:     {{ publication['published'] }}
+  | Scopus Information
+    > Scopus ID:            {{ publication['scopus_id'] }}
+  | KITOpen Information
+    > On KITOpen?           {{ publication['on_kitopen'] }}
+    > KITOpen ID:           {{ publication['kitopen_id'] }}
+    > POF Structure:        {{ publication['pof_structure'] }}
+

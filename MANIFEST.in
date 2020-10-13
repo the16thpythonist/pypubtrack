@@ -6,6 +6,7 @@ include README.rst
 
 include VERSION
 include pypubtrack/VERSION
+
 recursive-include pypubtrack/templates *
 
 recursive-include tests *

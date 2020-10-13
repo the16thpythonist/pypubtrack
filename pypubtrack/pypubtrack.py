@@ -54,12 +54,8 @@ class Pubtrack:
 
         # Get a new instance of the config singleton object.
         config = Config().load_dict({
-            'base': {
-                'url': 'http://localhost/api/v1/'
-            },
-            'auth': {
-                'token': 'my-token'
-            }
+            'basic': {'url': 'http://localhost/api/v1/'},
+            'auth': {'token': 'my-token'}
         })
 
         pubtrack = Pubtrack(config)
@@ -83,7 +79,7 @@ class Pubtrack:
             response = self.publication.post(base_publication)
             publication['uuid'] = response['uuid']
         except ConnectionError as err:
-            print(err)
+            pass
 
         self._import_publication_authors(publication)
 

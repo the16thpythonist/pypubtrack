@@ -59,6 +59,13 @@ Installation
 
     $ pip3 install --user pypubtrack
 
+To use the CLI commands properly it is recommended to add the folder of local binary executables to the
+system PATH:
+
+.. code-block:: console
+    $ echo 'export PATH=~/.local/bin/:$PATH' >> ~/.bashrc
+    $ source ~/.bashrc
+
 Alternatively it can also be installed by cloning this repository from github and executing the setup manually:
 
 .. code-block:: console
@@ -77,7 +84,7 @@ Basic Usage
 
     # Getting a new instance of the config singleton
     config = Config().load_dict({
-        'base': {'url': 'https://pubtrack.com/api/v1'},
+        'basic': {'url': 'https://pubtrack.com/api/v1'},
         'auth': {'token': 'MY SUPER SECRET TOKEN'}
     })
 
@@ -92,8 +99,39 @@ Basic Usage
         print('Something went wrong!')
 
 
+Basic CLI Usage
+---------------
+
+If the package was properly installed, the `pypubtrack` command should be available from the terminal. For further
+information use '--help' option.
+
+.. code-block:: console
+
+    $ pypubtrack --help
+
+To create an installation folder and a local configuration file use the `init` command. The config file can be edited
+with the `config` command. It will open in your favorite editor.
+
+.. code-block:: console
+
+    $ pypubtrack init
+    $ pypubtrack config
+
+To import scopus publications to your pubtrack app, use the `import-scopus` command. To update existing publication
+records on pubtrack with kitopen information, use the `update-kitopen` command.
+
+.. code-block:: console
+
+    $ pypubtrack import-scopus --verbose --start=2018
+    $ pypubtrack update-kitopen --verbose --start=2018
+
+.. note::
+
+    To use the pypubtrack application, the config file needs to be initialized and needs to contain valid information
+    about the pubtrack URL, authentication token, scopus api key etc...
+
 Credits
--------
+=======
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 

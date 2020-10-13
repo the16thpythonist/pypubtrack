@@ -1,7 +1,19 @@
 [basic]
-    url = 'http://0.0.0.0:8000/api/v1'
+    # This is the URL to the pubtrack application you wish to access. The pubtrack application is a web application,
+    # which is supposed to be implemented as a private instance, so you would have to change this to the specific
+    # URL of your pubtrack app. If it for a local instance use "http://localhost/api/v1"
+    url = 'http://pubtrack.ignorelist.com/api/v1'
 
 [auth]
+    # This defines the Authentication method to be used. At the moment "TokenAuthentication" is the only option
     type = 'TokenAuthentication'
-    token = '46a79e91844078302272ceace5339ea40905adc1'
+    # Insert your own API token here, which you have acquired from the pubtrack application you wish to access.
+    token = '4fbf0aacffd7ed7c4c55cbeb63c4efefd2d215d3 '
 
+[scopus]
+    # Insert your scopus API key here, if you wish to use the scopus related functionality of the client.
+    api_key = '013ff70c81049af047c0648e87278a9a'
+    # This number defines the max amount of author information to be imported with each application.
+    # This has to be limited because some collabortations have 100+ authors and would substantially slow down the
+    # client if all of those had to be processed.
+    author_limit = 10

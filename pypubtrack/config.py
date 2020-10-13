@@ -85,6 +85,12 @@ class Config(metaclass=Singleton):
         class_string = self.data['auth']['type']
         return getattr(authentication, class_string)
 
+    def get_author_limit(self) -> int:
+        return self.data['scopus']['author_limit']
+
+    def get_scopus_key(self) -> str:
+        return self.data['scopus']['api_key']
+
     # HELPER FUNCTIONS
     # ----------------
 

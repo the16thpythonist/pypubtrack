@@ -1,10 +1,17 @@
 import os
 import shutil
+import datetime
 
 from pathlib import Path
 from typing import Iterable, Dict, Any
 
+import click
+from jinja2 import Template
+from pybliometrics.scopus import AbstractRetrieval
+
+
 PATH = Path(__file__).parent.absolute()
+TEMPLATE_PATH = os.path.join(PATH, 'templates')
 
 
 # INSTALLATION UTILITIES
@@ -60,13 +67,28 @@ def exclude_keys(d: Dict[Any, Any], keys: Iterable[Any]) -> Dict[Any, Any]:
     return copy
 
 
-# MISC. UTILITIES
-# ===============
+# OUTPUT UTILITIES
+# ================
+
+def get_template(name: str):
+    template_path = os.path.join(TEMPLATE_PATH, name)
+    with open(template_path, mode='r+') as file:
+        return Template(file.read())
+
+
+def out(verbose: bool, *args, **kwargs):
+    if verbose:
+        click.secho(*args, **kwargs)
+
 
 def get_version() -> str:
     version_path = os.path.join(PATH, 'VERSION')
     with open(version_path, mode='r') as file:
         return file.read().replace('\n', '').replace(' ', '')
+
+
+# MISC. UTILITIES
+# ===============
 
 
 def author_name_kitopen(first_name: str, last_name: str) -> str:
@@ -75,4 +97,32 @@ def author_name_kitopen(first_name: str, last_name: str) -> str:
         first_name[0].upper()
     )
 
+
+class ScopusPublicationAdapter:
+
+    def __init__(self, abstract_retrieval: AbstractRetrieval):
+        self.abstract_retrieval = abstract_retrieval
+
+    def get_publication(self):
+        return {
+            'title': self.abstract_retrieval.title,
+            'published': self._convert_date(self.abstract_retrieval.coverDate),
+            'doi': self.abstract_retrieval.doi,
+            'scopus_id': self.abstract_retrieval.identifier,
+            'authors': self.get_authors()
+        }
+
+    def get_authors(self):
+        results = []
+        for author in self.abstract_retrieval.authors:
+            results.append({
+                'first_name': author.given_name,
+                'last_name': author.surname,
+                'scopus_id': author.auid
+            })
+        return results
+
+    def _convert_date(self, date: str):
+        date_time = datetime.datetime.strptime(date, '%Y-%m-%d')
+        return date_time.strftime('%Y-%m-%dT%H:%M:%S')
 
